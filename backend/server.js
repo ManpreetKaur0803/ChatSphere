@@ -13,7 +13,7 @@ dotenv.config();
 connectDB();
 const app = express();
 
-app.use(express.json()); //to accept JSON data
+app.use(express.json()); // to accept JSON data
 
 app.get("/", (req, res) => {
   res.send("API is Running Successfully");
@@ -66,8 +66,22 @@ io.on("connection", (socket) => {
     });
   });
 
+  // -------------------- 📞 Video & Voice Call Signaling --------------------
+  socket.on("callUser", ({ userToCall, signalData, from }) => {
+    io.to(userToCall).emit("callIncoming", { signal: signalData, from });
+  });
+
+  socket.on("answerCall", (data) => {
+    io.to(data.to).emit("callAccepted", data.signal);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User Disconnected:", socket.id);
+    socket.leave(socket.id);
+  });
+
   socket.off("setup", () => {
     console.log("USER DISCONNECTED");
-    socket.leave(userData._id);
+    socket.leave(socket.id);
   });
 });
