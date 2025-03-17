@@ -10,7 +10,8 @@ function App() {
   useEffect(() => {
     fetch("http://localhost:5000/api/user") // Adjust API route
       .then((res) => res.json())
-      .then((data) => setUsers(data));
+      .then((data) => setUsers(data))
+      .catch((err) => console.error("Error fetching users:", err));
   }, []);
 
   return (

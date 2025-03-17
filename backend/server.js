@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const dotenv = require("dotenv");
 const { chats } = require("./data/data");
 const connectDB = require("./config/db");
@@ -14,6 +15,7 @@ connectDB();
 const app = express();
 
 app.use(express.json()); // to accept JSON data
+app.use(cors());
 
 app.get("/", (req, res) => {
   res.send("API is Running Successfully");
@@ -66,7 +68,7 @@ io.on("connection", (socket) => {
     });
   });
 
-  // -------------------- 📞 Video & Voice Call Signaling --------------------
+  // --------------------  Video & Voice Call Signaling --------------------
   socket.on("callUser", ({ userToCall, signalData, from }) => {
     io.to(userToCall).emit("callIncoming", { signal: signalData, from });
   });
